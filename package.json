@@ -13,6 +13,8 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "http": "^0.0.1-security",
+    "pusher": "^5.1.1-beta",
+    "uuid": "^9.0.0",
     "websocket": "^1.0.34"
   },
   "devDependencies": {

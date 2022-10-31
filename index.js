@@ -3,32 +3,47 @@ const app = express();
 const cors = require("cors");
 app.use(express.json());
 app.use(cors({origin: "*"}));
+const Pusher = require("pusher");
+const {v4: uuidv4} = require("uuid");
 
-const webSocketServer = require("websocket").server;
-const server = require("http").createServer(app);
-server.listen(4001);
-const wsServer = new webSocketServer({httpServer: server});
+const pusher = new Pusher({
+  appId: "1497824",
+  key: "b9dfc7de04077893b740",
+  secret: "e671aa605bf169f8f0db",
+  cluster: "ap1",
+  useTLS: true,
+});
+
+const Activities = ["joined", "left", "sent"];
+const ActivityLog = [];
 
 app.post("/", (req, res) => {
   const name = req.body.UserName;
-  console.log(`User ${name} has joined the server.`);
-  wsServer.broadcast(JSON.stringify({Content: "User name", message: name}));
-  return res.status(201).json({Message: "Broadcasting your name"});
-});
+  const activity = req.body.Activity;
 
-// Establish a web socket to send and receive data
-wsServer.on("request", (request) => {
-  const ip = request.remoteAddress;
-  console.log(`Received a new web socket connection request from ${ip}`);
-  let connection = request.accept(null, request.origin);
-  console.log(`Connection from ${ip} accepted`);
+  if (name === null) {
+    return res.status(400).json({Error: "Name is null"});
+  } else if (name === "" || name.includes(" ")) {
+    return res.status(400).json({Error: "Name has whitespaces or is empty"});
+  }
 
-  // Receive messages from the client
-  connection.on("message", (msg) => {
-    wsServer.broadcast(
-      JSON.stringify({Content: "User message", message: msg.utf8Data})
-    );
+  if (!Activities.includes(activity)) {
+    return res.status(400).json({Error: "Invalid activity type"});
+  }
+
+  let message = `${name} has ${activity} the server.`;
+  let record = {id: uuidv4(), logMessage: message};
+
+  console.log(message);
+  ActivityLog.push(record);
+
+  // Broadcast the activity to all connected clients
+  pusher.trigger("my-channel", "my-event", {
+    content: activity,
+    logUpdate: record,
   });
+
+  return res.status(201).json({Logs: ActivityLog});
 });
 
 app.listen(4000, () => {
