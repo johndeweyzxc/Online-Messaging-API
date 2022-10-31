@@ -7,11 +7,11 @@ const Pusher = require("pusher");
 const {v4: uuidv4} = require("uuid");
 
 const pusher = new Pusher({
-  appId: process.env.appId,
-  key: process.env.key,
-  secret: process.env.secret,
-  cluster: process.env.cluster,
-  useTLS: process.env.useTLS,
+  appId: "1499632",
+  key: "1c2c583c23fe80bf1db8",
+  secret: "b8de624ddf51a4fe12d9",
+  cluster: "ap1",
+  useTLS: true,
 });
 
 const Activities = ["joined", "left", "sent"];
