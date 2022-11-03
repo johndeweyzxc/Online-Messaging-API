@@ -138,6 +138,23 @@ app.post("/Join", (req, res) => {
     .json({Name: name, ActivityLog: ActivityLog, SentMessages: SentMessages});
 });
 
+// This is for administrator purposes, this will flush or delete all
+// activity logs and sent messages.
+app.post("/Flush", (req, res) => {
+  const AuthCode = req.body.AuthCode;
+  const Password = process.env.Password;
+
+  if (AuthCode === Password) {
+    ActivityLog = [];
+    SentMessages = [];
+    return res
+      .status(201)
+      .json({Message: "Successfully flushed activity logs and sent messages"});
+  } else {
+    return res.status(400).json({Error: "Invalid authentication code"});
+  }
+});
+
 app.listen(4000, () => {
   console.log("Server started listening at PORT 4000");
 });
