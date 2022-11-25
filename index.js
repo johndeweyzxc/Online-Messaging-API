@@ -117,6 +117,7 @@ app.post("/SendMessage", (req, res) => {
 
 // For joining the server
 app.post("/Join", (req, res) => {
+  console.log(req.body);
   const name = req.body.UserName;
 
   // Check the name for null value or empty string
