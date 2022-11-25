@@ -75,11 +75,13 @@ app.post("/GetUpdates", (req, res) => {
   }
 
   if (NewMsg === undefined || NewActivities === undefined) {
-    return res.status(400).json({Error: "Invalid activity id or message id"});
+    return res
+      .statusCode(400)
+      .json({Error: "Invalid activity id or message id"});
   }
 
   return res
-    .status(200)
+    .statusCode(200)
     .json({ActivityLog: NewActivities, SentMessages: NewMsg});
 });
 
@@ -91,7 +93,7 @@ app.post("/SendMessage", (req, res) => {
   // Check the name for null value or empty string
   const validate = validateString(name, "name");
   if (validate.statusCode === 400) {
-    return res.status(400).json({Error: validate.Error});
+    return res.statusCode(400).json({Error: validate.Error});
   }
 
   // Check the message for null value or empty string
@@ -99,7 +101,7 @@ app.post("/SendMessage", (req, res) => {
   let logMsg = `${name} has sent a message.`;
 
   if (validateMsg.statusCode === 400) {
-    return res.status(400).json({Error: validateMsg.Error});
+    return res.statusCode(400).json({Error: validateMsg.Error});
   } else {
     let messageId = uuidv4();
     let logId = uuidv4();
@@ -111,19 +113,20 @@ app.post("/SendMessage", (req, res) => {
     ActivityLog.push(recordLog);
     SentMessages.push(recordMessage);
 
-    return res.status(201).json({newMsg: recordMessage, newLogMsg: recordLog});
+    return res
+      .statusCode(201)
+      .json({newMsg: recordMessage, newLogMsg: recordLog});
   }
 });
 
 // For joining the server
 app.post("/Join", (req, res) => {
-  console.log(JSON.parse(req.body));
   const name = req.body.UserName;
 
   // Check the name for null value or empty string
   const validate = validateString(name, "name");
   if (validate.statusCode === 400) {
-    return res.status(400).json({Error: validate.Error});
+    return res.statusCode(400).json({Error: validate.Error});
   }
 
   let logMsg = `${name} has joined the server.`;
@@ -135,7 +138,7 @@ app.post("/Join", (req, res) => {
   ActivityLog.push(recordLog);
 
   return res
-    .status(201)
+    .statusCode(201)
     .json({Name: name, ActivityLog: ActivityLog, SentMessages: SentMessages});
 });
 
@@ -149,10 +152,10 @@ app.post("/Flush", (req, res) => {
     ActivityLog = [];
     SentMessages = [];
     return res
-      .status(201)
+      .statusCode(201)
       .json({Message: "Successfully flushed activity logs and sent messages"});
   } else {
-    return res.status(400).json({Error: "Invalid authentication code"});
+    return res.statusCode(400).json({Error: "Invalid authentication code"});
   }
 });
 
