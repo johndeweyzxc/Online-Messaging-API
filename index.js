@@ -85,6 +85,11 @@ app.post("/GetUpdates", (req, res) => {
 
 // Receiving a message from the client
 app.post("/SendMessage", (req, res) => {
+  let date_ob = new Date();
+  let hours = date_ob.getHours();
+  let minutes = date_ob.getMinutes();
+  let seconds = date_ob.getSeconds();
+
   const name = req.body.UserName;
   const message = req.body.MessageContent;
 
@@ -96,7 +101,7 @@ app.post("/SendMessage", (req, res) => {
 
   // Check the message for null value or empty string
   const validateMsg = validateString(message, "msg");
-  let logMsg = `${name} has sent a message.`;
+  let logMsg = `[MESSAGE][${hours}:${minutes}:${seconds}]${name} has sent a message.`;
 
   if (validateMsg.statusCode === 400) {
     return res.status(400).json({Error: validateMsg.Error});
@@ -117,6 +122,11 @@ app.post("/SendMessage", (req, res) => {
 
 // For joining the server
 app.post("/Join", (req, res) => {
+  let date_ob = new Date();
+  let hours = date_ob.getHours();
+  let minutes = date_ob.getMinutes();
+  let seconds = date_ob.getSeconds();
+
   const name = req.body.UserName;
 
   // Check the name for null value or empty string
@@ -125,7 +135,7 @@ app.post("/Join", (req, res) => {
     return res.status(400).json({Error: validate.Error});
   }
 
-  let logMsg = `${name} has joined the server.`;
+  let logMsg = `[JOIN][${hours}:${minutes}:${seconds}] ${name} has joined the server.`;
   let logId = uuidv4();
 
   let recordLog = {name: name, id: logId, msg: logMsg};
@@ -153,6 +163,11 @@ app.post("/Flush", (req, res) => {
   } else {
     return res.status(400).json({Error: "Invalid authentication code"});
   }
+});
+
+app.get("/", (_, res) => {
+  console.log("A client has connected to the server");
+  return res.send("Welcome to the server!");
 });
 
 app.listen(4000, () => {
