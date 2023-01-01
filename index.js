@@ -101,7 +101,7 @@ app.post("/SendMessage", (req, res) => {
 
   // Check the message for null value or empty string
   const validateMsg = validateString(message, "msg");
-  let logMsg = `[MESSAGE][${hours}:${minutes}:${seconds}]${name} has sent a message.`;
+  let logMsg = `[MESSAGE][${hours}:${minutes}:${seconds}] ${name} has sent a message.`;
 
   if (validateMsg.statusCode === 400) {
     return res.status(400).json({Error: validateMsg.Error});
